@@ -17,9 +17,10 @@ const loggin = async (req, res) => {
             where: { NombreUsuario }
         });
 
-        if (!usuario || !(await bcrypt.compare(Contrasena, usuario.Contrasena))) {
-            console.log('este es la clave ', Contrasena);
-            console.log('este es la clave hasheada ', usuario.Contrasena );
+        // COMPARACIÓN SIN BCRYPT
+        if (!usuario || Contrasena !== usuario.Contrasena) {
+            console.log('clave enviada:', Contrasena);
+            console.log('clave en bd:', usuario?.Contrasena);
 
             return res.status(401).json({
                 message: 'Credenciales inválidas',
@@ -33,6 +34,7 @@ const loggin = async (req, res) => {
         });
 
         const redirec = '/dashboardAdmin';
+        
         res.json({
             message: 'Login exitoso',
             status: 'success',
@@ -45,8 +47,6 @@ const loggin = async (req, res) => {
             redirec
         });
 
-
-
     } catch (error) {
         console.error('Error en login:', error);
         res.status(500).json({
@@ -54,7 +54,8 @@ const loggin = async (req, res) => {
             status: 'error'
         });
     }
-}
+};
+
 const logout = async (req, res) => {
    const redirec = '/';
     res.json({
